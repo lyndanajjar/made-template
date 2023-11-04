@@ -18,19 +18,19 @@ My objective is to highlight the importance of startups in Germany's economy, em
 
 To address this question,  I will collect data from the following sources:
 
-### Datasource1:
+### Datasource1: Startups in German States
 	• Metadata URL:  https://www.wirtschaft.nrw/open-data
 	• Data URL:  https://www.wirtschaft.nrw/system/files/media/document/file/nrw-startup-report-2020.ods
 	• Data Type: ods
 The first dataset provides insights into the number of startups across various German states (Bundesland). It encompasses state names, startup types, and the quantity of startups, offering a comprehensive view of regional entrepreneurial activities.
 
-### Datasource2:
+### Datasource2: German GDP (1950-2020)
 	• Metadata URL: https://www.destatis.de/DE/Home/_inhalt.html
 	• Data URL: https://www.destatis.de//DE/Themen/Wirtschaft/Volkswirtschaftliche-Gesamtrechnungen-Inlandsprodukt/_Grafik/_Interaktiv/Daten/bip-1950-heute.csv?__blob=value
 	• Data Type: csv
 The second dataset captures Germany's economic performance from 1950 to 1950, with a focus on the Gross Domestic Product (GDP) averages .
 
-### Datasource3:
+### Datasource3: German Business Notifications (2018-2022)
 	• Metadata URL: https://www-genesis.destatis.de/genesis/online
 	• Data URL: https://www-genesis.destatis.de/genesis/online?operation=abruftabelleBearbeiten&levelindex=2&levelid=1699139153643&auswahloperation=abruftabelleAuspraegungAuswaehlen&auswahlverzeichnis=ordnungsstruktur&auswahlziel=werteabruf&code=52311-0001&auswahltext=&werteabruf=Value+retrieval#abreadcrumb
 	• Data Type: xlsx
