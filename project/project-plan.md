@@ -10,7 +10,7 @@ How does the presence and performance of the startup ecosystem in Germany impact
 
 ## Description
 
-This project delves into the intricate relationship between Germany's burgeoning startup ecosystem and its influence on the nation's economic growth. I am exploring the dynamics of new startup creation and the investments they attract and their impact on critical economic indicators such as GDP and job creation.
+My project investigates how Germany's growing startup ecosystem impact the country's economy. I will analyze the dynamics of new startup creation and the investments they attract and their impact on critical economic indicators such as GDP and job creation.
 My objective is to highlight the importance of startups in Germany's economy, emphasizing their role in driving innovation and prosperity. The insights gained from this project can provide valuable guidance to policymakers and stakeholders regarding the vital role of nurturing and supporting the startup ecosystem to promote economic development and job opportunities within the country.
 
 
