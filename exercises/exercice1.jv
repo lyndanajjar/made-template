@@ -39,9 +39,9 @@ pipeline AirportsPipeline {
         "geo_punkt" oftype text
         ];
     }
+block AirportsLoader oftype SQLiteLoader {
+    table: "airports";
+    file: "./airports.sqlite";
+}
 
-    block AirportsLoader oftype SQLiteLoader {
-        table: "airports";
-        file: "airports.sqlite";
-    }
 }
