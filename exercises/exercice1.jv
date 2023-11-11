@@ -15,12 +15,10 @@ pipeline AirportsPipeline {
     }
 
     block AirportsTextFileInterpreter oftype TextFileInterpreter {
-
      }
 
     block AirportsCSVInterpreter oftype CSVInterpreter {
         delimiter: ";";
-
     }
 
     block AirportsTableInterpreter oftype TableInterpreter {
