@@ -20,21 +20,38 @@ To address this question,  I will collect data from the following sources:
 
 ### Datasource1: Startups in German States
 	• Metadata URL:  https://www.wirtschaft.nrw/open-data
-	• Data URL:  https://www.wirtschaft.nrw/system/files/media/document/file/nrw-startup-report-2020.ods
+	• Data URL: https://www.wirtschaft.nrw/system/files/media/document/file/nrw-startup-report-2020.ods
 	• Data Type: ods
 The first dataset provides insights into the number of startups across various German states (Bundesland). It encompasses state names, startup types, and the quantity of startups, offering a comprehensive view of regional entrepreneurial activities.
 
-### Datasource2: German GDP (1950-2020)
-	• Metadata URL: https://www.destatis.de/DE/Home/_inhalt.html
-	• Data URL: https://www.destatis.de//DE/Themen/Wirtschaft/Volkswirtschaftliche-Gesamtrechnungen-Inlandsprodukt/_Grafik/_Interaktiv/Daten/bip-1950-heute.csv?__blob=value
-	• Data Type: csv
-The second dataset captures Germany's economic performance from 1950 to 1950, with a focus on the Gross Domestic Product (GDP) averages .
+### Datasource2: Germany Combined GDP (1960-2022)
+	• Metadata URL: World Bank - Germany GDP Metadata
+	• Data URL 1: https://api.worldbank.org/v2/en/indicator/NY.GDP.MKTP.KD.ZG?downloadformat=excel
+	• Data URL 2: https://api.worldbank.org/v2/en/indicator/NY.GDP.MKTP.CD?downloadformat=excel
+	• Data Type: Excel
+The second dataset captures Germany's economic performance from 1950 to 1950, focusing on the Gross Domestic Product (GDP) growth rate and GDP per capita in current US dollars.
 
-### Datasource3: German Business Notifications (2018-2022)
-	• Metadata URL: https://www-genesis.destatis.de/genesis/online
-	• Data URL: https://www-genesis.destatis.de/genesis/online?operation=abruftabelleBearbeiten&levelindex=2&levelid=1699139153643&auswahloperation=abruftabelleAuspraegungAuswaehlen&auswahlverzeichnis=ordnungsstruktur&auswahlziel=werteabruf&code=52311-0001&auswahltext=&werteabruf=Value+retrieval#abreadcrumb
-	• Data Type: xlsx
-The third dataset contains informations about business registrations and deregistrations within the various states of Germany from the year 2018 to 2022. 
+
+
+### Datasource3: Germany Business Startups (2003-2022)
+	• Metadata URL: Destatis - German Federal Statistical Office
+	• Data URL: https://www.destatis.de/DE/Themen/Branchen-Unternehmen/Unternehmen/_Grafik/_Interaktiv/Daten/betriebsgruendungen-insgesamt.csv?__blob=value
+	• Data Type: CSV
+The third dataset provides information about the total number of business startups in Germany. 
+
+
+
+### Datasource4: German Employment Growth by Industries (1992-2022)
+	• Metadata URL: https://www.destatis.de/DE/Home/_inhalt.html
+	• Data URL: https://www.destatis.de/DE/Themen/Arbeit/Arbeitsmarkt/_Grafik/_Interaktiv/Daten/erwerbstaetigkeit-wz-bereiche-jahr.csv?__blob=value
+	• Data Type: csv
+The fourth dataset focuses on yearly employment growth in various industries, including agriculture, manufacturing, construction, and service industries.
+
+### Datasource5: Business Insolvencies in Germany (2000-2022)
+	• Metadata URL: https://www.destatis.de/DE/Home/_inhalt.html
+	• Data URL: https://www.destatis.de/DE/Themen/Branchen-Unternehmen/Unternehmen/_Grafik/_Interaktiv/Daten/insolvenzen-unternehmen-insgesamt.csv?__blob=value
+	• Data Type: csv
+The fifth dataset provides information on business insolvencies in Germany from the year 2000 to 2017.
 
 <!-- Note : I'm still looking for other datasets to answer my question . -->
 
