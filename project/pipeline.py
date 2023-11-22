@@ -9,11 +9,13 @@ from io import StringIO
 
 # Get the current script direc
 script_dir = os.path.dirname(os.path.abspath(__file__))
-data_folder = os.path.join(script_dir, 'data')
+data_folder = os.path.join(os.path.dirname(script_dir), 'data')
+
 
 
 # create engine globally
-db_path = os.path.join(data_folder, 'Linda_data.db')
+db_filename = 'Linda_data.db'
+db_path = os.path.join(data_folder, db_filename)
 engine = create_engine(f'sqlite:///{db_path}')
 
 try:
