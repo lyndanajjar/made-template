@@ -1,6 +1,6 @@
 
 import pandas as pd
-from sqlalchemy import create_engine, Float, Text , Integer
+from sqlalchemy import create_engine, Float, Text 
 
 url = "https://download-data.deutschebahn.com/static/datasets/haltestellen/D_Bahnhof_2020_alle.CSV"
 df = pd.read_csv(url, encoding='utf-8', sep=';')
@@ -26,7 +26,7 @@ column_types = {
     'Laenge': Float(),
     'Breite': Float(),
     'Betreiber_Name': Text(),
-    'Betreiber_Nr': Integer(),
+    'Betreiber_Nr': Text(),
 }
 
 engine = create_engine('sqlite:///trainstops.sqlite', echo=False)
