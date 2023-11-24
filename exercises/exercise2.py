@@ -1,6 +1,6 @@
 
 import pandas as pd
-from sqlalchemy import create_engine, Float, Text 
+from sqlalchemy import create_engine, Float, Text , Integer
 
 url = "https://download-data.deutschebahn.com/static/datasets/haltestellen/D_Bahnhof_2020_alle.CSV"
 df = pd.read_csv(url, encoding='utf-8', sep=';')
@@ -18,7 +18,7 @@ df = df[df['IFOPT'].str.match(r'^[A-Za-z]{2}:\d+:\d+(\:\d+)?$') | df['IFOPT'].no
 
 df = df.dropna()
 column_types = {
-    'EVA_NR': Text(),
+    'EVA_NR': Integer(),
     'DS100': Text(),
     'IFOPT': Text(),
     'NAME': Text(),
@@ -26,7 +26,7 @@ column_types = {
     'Laenge': Float(),
     'Breite': Float(),
     'Betreiber_Name': Text(),
-    'Betreiber_Nr': Text(),
+    'Betreiber_Nr': Integer(),
 }
 
 engine = create_engine('sqlite:///trainstops.sqlite', echo=False)
