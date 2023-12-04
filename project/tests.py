@@ -1,5 +1,4 @@
 import unittest
-import subprocess
 import os
 import sqlite3
 
@@ -11,7 +10,7 @@ class TestDataPipeline(unittest.TestCase):
     def test_data_pipeline(self):
 
 
-        # Check if the SQLite database is created
+        # Check if the database is created
         self.assertTrue(os.path.exists(self.db_path))
 
         # Check if the necessary tables exist in the database
@@ -28,6 +27,8 @@ class TestDataPipeline(unittest.TestCase):
         self.test_total_employment_growth_consistency()
         self.test_business_startups_consistency()
 
+
+
     def table_exists(self, table_name):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -35,8 +36,6 @@ class TestDataPipeline(unittest.TestCase):
         result = cursor.fetchone()
         conn.close()
         return result is not None
-    
-    
     
     
     def get_row_count(self, table_name):
@@ -51,29 +50,25 @@ class TestDataPipeline(unittest.TestCase):
     def check_no_null_values(self, table_name, columns):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-
         for column in columns:
         # escape column names with spaces
             escaped_column = f'"{column}"' if ' ' in column else column
             query = f"DELETE FROM {table_name} WHERE {escaped_column} IS NULL;"
             cursor.execute(query)
-
         conn.commit()
         conn.close()
-        
 
         
-        
+
     def check_negative_insolvency_rates(self):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-
         query = "SELECT COUNT(*) FROM insolvency_data WHERE Insolvencies < 0;"
         cursor.execute(query)
         negative_values_count = cursor.fetchone()[0]
         self.assertEqual(negative_values_count, 0, "Negative values found in Insolvencies.")
-
         conn.close()   
+        
 
     def test_startup_data_consistency(self):
         expected_startup_data_row_count = 32        
@@ -83,21 +78,14 @@ class TestDataPipeline(unittest.TestCase):
         self.check_no_null_values('startup_data', ['Bundesland','Typ','Startups'])  
         
 
-
     def test_gdp_growth_consistency(self):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM germany_combined_gdp;")
         data = cursor.fetchall()
         conn.close()
-
-    # Extract the 'GDP per Capita (Current US Dollars)' column
-        gdp_per_capita_column = [row[2] for row in data]  # Assuming 'GDP per Capita' is the third column (index 2)
-
-    # Check that all values in the 'GDP per Capita' column are positive
+        gdp_per_capita_column = [row[2] for row in data]  
         self.assertTrue(all(gdp_per_capita is not None and gdp_per_capita > 0 for gdp_per_capita in gdp_per_capita_column if gdp_per_capita is not None))
-
-    # Check that there are no null values 
         self.check_no_null_values('germany_combined_gdp', ['Year', 'GDP Growth Rate', 'GDP per Capita (Current US Dollars)'])
 
 
