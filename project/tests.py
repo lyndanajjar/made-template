@@ -7,9 +7,8 @@ class TestDataPipeline(unittest.TestCase):
     def setUp(self):
         self.db_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'Linda_data.db')
 
+
     def test_data_pipeline(self):
-
-
         # Check if the database is created
         self.assertTrue(os.path.exists(self.db_path))
 
@@ -26,7 +25,6 @@ class TestDataPipeline(unittest.TestCase):
         self.test_insolvency_rates_consistency()
         self.test_total_employment_growth_consistency()
         self.test_business_startups_consistency()
-
 
 
     def table_exists(self, table_name):
@@ -57,8 +55,7 @@ class TestDataPipeline(unittest.TestCase):
             cursor.execute(query)
         conn.commit()
         conn.close()
-
-        
+       
 
     def check_negative_insolvency_rates(self):
         conn = sqlite3.connect(self.db_path)
@@ -89,26 +86,22 @@ class TestDataPipeline(unittest.TestCase):
         self.check_no_null_values('germany_combined_gdp', ['Year', 'GDP Growth Rate', 'GDP per Capita (Current US Dollars)'])
 
 
-
     def test_insolvency_rates_consistency(self):
         expected_insolvency_rates_row_count = 23
         self.assertEqual(self.get_row_count('insolvency_data'), expected_insolvency_rates_row_count)
         self.check_no_null_values('insolvency_data', ['Year','Insolvencies'])  
 
 
-
     def test_total_employment_growth_consistency(self):
         expected_employment_growth_row_count = 31
         self.assertEqual(self.get_row_count('employment_growth_data'), expected_employment_growth_row_count)
         self.check_no_null_values('employment_growth_data', ['Year','Total','Agriculture, Forestry, and Fishing','Manufacturing Industry excl. Construction','Construction','Service Industries'])  
-    
       
 
     def test_business_startups_consistency(self):
         expected_startup_business_row_count = 20
         self.assertEqual(self.get_row_count('startup_data_business'), expected_startup_business_row_count)
         self.check_no_null_values('startup_data_business', ['Year','Business Startups'])  
-
 
 
 if __name__ == '__main__':
