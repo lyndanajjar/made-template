@@ -16,4 +16,6 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Execute tests
-      run: ./test.sh
+      run: |
+          chmod +x ./project/tests.sh
+          ./project/tests.sh
