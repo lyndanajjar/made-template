@@ -3,9 +3,9 @@ name: CI
 on:
   push:
     branches:
-      - main # 
+      - main  
     paths:
-    - project/**
+      - 'project/**'
 
 jobs:
   test:
