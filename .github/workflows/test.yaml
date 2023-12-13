@@ -1,12 +1,13 @@
 name: Project Tests
 
 on:
+  workflow_dispatch: {}
   push:
+    branches:
+      - main
     paths:
       - 'data/**'
       - 'project/**'
-    branches:
-      - main
 
 jobs:
   test:
