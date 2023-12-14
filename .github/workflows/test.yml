@@ -32,4 +32,4 @@ jobs:
         run: |
           chmod u+r+x ./project/tests.sh
           cd ./project
-          ./test.sh
+          ./tests.sh
