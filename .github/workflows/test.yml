@@ -30,6 +30,6 @@ jobs:
 
       - name: Execute tests.sh
         run: |
-          chmod u+r+x ./project/test.sh
+          chmod u+r+x ./project/tests.sh
           cd ./project
           ./test.sh
