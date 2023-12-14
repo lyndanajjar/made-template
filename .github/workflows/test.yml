@@ -28,8 +28,5 @@ jobs:
           pip install pandas pytest requests sqlalchemy
         
 
-      - name: Execute tests.sh
-        run: |
-          chmod u+r+x ./project/tests.sh
-          cd ./project
-          ./tests.sh
+      - name: Execute tests.py
+        run: python project/tests.py
