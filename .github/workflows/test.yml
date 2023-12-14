@@ -28,5 +28,5 @@ jobs:
           pip install pandas pytest requests sqlalchemy
         
 
-      - name: Execute tests.py
-        run: python project/tests.py
+      - name: Execute tests.sh
+        run: python project/tests.sh
