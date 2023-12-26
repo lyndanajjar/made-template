@@ -135,7 +135,7 @@ try:
 
 
 
-    process_startup_data()
+    #process_startup_data()
     process_combined_gdp_data()
     process_startup_Business_data()
     extract_and_add_employment_growth_data()
