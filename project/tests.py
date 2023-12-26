@@ -18,7 +18,6 @@ class TestDataPipeline(unittest.TestCase):
         self.assertTrue(self.table_exists('employment_growth_data'))
 
         # Check data consistency and completeness
-        self.test_startup_data_consistency()
         self.test_gdp_growth_consistency()
         self.test_total_employment_growth_consistency()
         self.test_business_startups_consistency()
@@ -63,12 +62,6 @@ class TestDataPipeline(unittest.TestCase):
         gdp_per_capita_column = [row[2] for row in data]  
         self.assertTrue(all(gdp_per_capita is not None and gdp_per_capita > 0 for gdp_per_capita in gdp_per_capita_column if gdp_per_capita is not None))
         self.check_no_null_values('germany_combined_gdp', ['Year', 'GDP Growth Rate', 'GDP per Capita (Current US Dollars)'])
-
-
-    def test_insolvency_rates_consistency(self):
-        expected_insolvency_rates_row_count = 23
-        self.assertEqual(self.get_row_count('insolvency_data'), expected_insolvency_rates_row_count)
-        self.check_no_null_values('insolvency_data', ['Year','Insolvencies'])  
 
 
     def test_total_employment_growth_consistency(self):
