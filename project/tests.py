@@ -52,15 +52,6 @@ class TestDataPipeline(unittest.TestCase):
             cursor.execute(query)
         conn.commit()
         conn.close()
-
-
-
-    def test_startup_data_consistency(self):
-        expected_startup_data_row_count = 32        
-        actual_row_count = self.get_row_count('startup_data')
-        #print(f"Actual Row Count for startup_data: {actual_row_count}")
-        self.assertEqual(actual_row_count, expected_startup_data_row_count)
-        self.check_no_null_values('startup_data', ['Bundesland','Typ','Startups'])  
         
 
     def test_gdp_growth_consistency(self):

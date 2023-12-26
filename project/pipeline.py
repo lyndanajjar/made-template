@@ -21,23 +21,6 @@ db_path = os.path.join(data_folder, db_filename)
 engine = create_engine(f'sqlite:///{db_path}')
 
 try:
-    def process_startup_data():
-        url = "https://www.wirtschaft.nrw/system/files/media/document/file/nrw-startup-report-2020.ods"
-        response = requests.get(url)
-        file_name = os.path.join(data_folder, 'nrw-startup-report-2020.ods')
-        with open(file_name, "wb") as file:
-            file.write(response.content)
-        ods_data = get_data(file_name)
-        sheet_name = 'S__20_-_Finanzierungen_BL'
-        df = pd.DataFrame(ods_data[sheet_name])
-        column_names = df.iloc[0]
-        data = df[1:].copy()
-        data.columns = column_names
-        data[['Bundesland', 'Typ', 'Startups']] = data['Bundesland,Typ,Startups'].str.split(',', expand=True)
-        data = data[data['Bundesland'].notna()]
-        data['Startups'] = data['Startups'].apply(lambda x: 0 if x is None or not str(x).isnumeric() else int(x))
-        data.to_sql('startup_data', con=engine, index=False, if_exists='replace')
-        print("Startup data processed and saved to SQLite.")
 
     def process_combined_gdp_data():
         # Load the GDP and GDP per capita Excel files
