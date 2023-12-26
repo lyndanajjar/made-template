@@ -5,6 +5,8 @@ from sklearn.preprocessing import MinMaxScaler
 from sqlalchemy import create_engine
 import os
 from io import StringIO
+import xml.etree.ElementTree as ET
+
 
 
 # Get the current script direc
@@ -101,15 +103,35 @@ try:
         else:
             print("Error")
 
-    def process_insolvency_data():
-        csv_url = "https://www.destatis.de/DE/Themen/Branchen-Unternehmen/Unternehmen/_Grafik/_Interaktiv/Daten/insolvenzen-unternehmen-insgesamt.csv?__blob=value"
-        response = requests.get(csv_url)
-        csv_data = StringIO(response.text)
-        df = pd.read_csv(csv_data, delimiter=';')
-        df.columns = ['Year', 'Insolvencies']
-        table_name = 'insolvency_data'
-        df.to_sql(table_name, con=engine, index=False, if_exists='replace')
-        print("Insolvency data from CSV processed and saved to SQLite.")
+
+        
+    def process_venture_capital_data():
+        xml_url = "https://stats.oecd.org/restsdmx/sdmx.ashx/GetData/VC_INVEST/DEU.VC_INV.VC_T+SEED+START+LATER.USD_V+SH_GDP/all?startTime=2002&endTime=2022"
+        response = requests.get(xml_url)
+        xml_data = response.content
+        root = ET.fromstring(xml_data)
+        ns = {
+        'ns0': 'http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message',
+        'ns2': 'http://www.SDMX.org/resources/SDMXML/schemas/v2_0/generic',
+    }
+
+        data = []
+        for series in root.findall('.//ns2:Series', namespaces=ns):
+            series_key = series.find('ns2:SeriesKey', namespaces=ns)
+            values = [value.attrib['value'] for value in series_key.findall('ns2:Value', namespaces=ns)]
+            attributes = series.find('ns2:Attributes', namespaces=ns)
+            attributes_dict = {value.attrib['concept']: value.attrib['value'] for value in attributes.findall('ns2:Value', namespaces=ns)}
+
+            for obs in series.findall('ns2:Obs', namespaces=ns):
+                row = {'Time': obs.find('ns2:Time', namespaces=ns).text, 'Value': obs.find('ns2:ObsValue', namespaces=ns).attrib['value']}
+                row.update(dict(zip(['LOCATION', 'SUBJECT', 'STAGES', 'MEASURE'], values)))
+                row.update(attributes_dict)
+                data.append(row)
+
+        df_venture_capital = pd.DataFrame(data)
+        table_name_venture_capital = 'venture_capital_data'
+        df_venture_capital.to_sql(table_name_venture_capital, con=engine, index=False, if_exists='replace')
+        print("Venture capital data processed and saved to SQLite.")
 
 
 
@@ -117,7 +139,7 @@ try:
     process_combined_gdp_data()
     process_startup_Business_data()
     extract_and_add_employment_growth_data()
-    process_insolvency_data()
+    process_venture_capital_data()
 
 
 except Exception as e:

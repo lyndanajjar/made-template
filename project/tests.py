@@ -13,16 +13,13 @@ class TestDataPipeline(unittest.TestCase):
         self.assertTrue(os.path.exists(self.db_path))
 
         # Check if the necessary tables exist in the database
-        self.assertTrue(self.table_exists('startup_data'))
         self.assertTrue(self.table_exists('germany_combined_gdp'))
         self.assertTrue(self.table_exists('startup_data_business'))
         self.assertTrue(self.table_exists('employment_growth_data'))
-        self.assertTrue(self.table_exists('insolvency_data'))
 
         # Check data consistency and completeness
         self.test_startup_data_consistency()
         self.test_gdp_growth_consistency()
-        self.test_insolvency_rates_consistency()
         self.test_total_employment_growth_consistency()
         self.test_business_startups_consistency()
 
@@ -55,17 +52,8 @@ class TestDataPipeline(unittest.TestCase):
             cursor.execute(query)
         conn.commit()
         conn.close()
-       
 
-    def check_negative_insolvency_rates(self):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        query = "SELECT COUNT(*) FROM insolvency_data WHERE Insolvencies < 0;"
-        cursor.execute(query)
-        negative_values_count = cursor.fetchone()[0]
-        self.assertEqual(negative_values_count, 0, "Negative values found in Insolvencies.")
-        conn.close()   
-        
+
 
     def test_startup_data_consistency(self):
         expected_startup_data_row_count = 32        
