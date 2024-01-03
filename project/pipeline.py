@@ -61,31 +61,36 @@ try:
     def extract_and_add_employment_growth_data():
         csv_url = "https://www.destatis.de/DE/Themen/Arbeit/Arbeitsmarkt/_Grafik/_Interaktiv/Daten/erwerbstaetigkeit-wz-bereiche-jahr.csv?__blob=value"
         response = requests.get(csv_url)
+        if response.status_code != 200:
+            print(f"Error fetching data: HTTP {response.status_code}")
+            return
+
         csv_data = StringIO(response.text)
         df = pd.read_csv(csv_data, delimiter=';', encoding='unicode_escape') 
-        df.columns = [col.strip('"\t ') for col in df.columns]
+        df.columns = [col.strip().replace('"', '') for col in df.columns]  # Improved column cleaning
+
+        print("Columns in DataFrame:", df.columns)  # Add this line to check the actual column names
+
         column_mapping = {
-        'Jahr': 'Year',
-        'Insgesamt': 'Total',
-        'Land- und Forstwirtschaft, Fischerei': 'Agriculture, Forestry, and Fishing',
-        'Produzierendes Gewerbe ohne Baugewerbe': 'Manufacturing Industry excl. Construction',
-        'Baugewerbe': 'Construction',
-        'Dienstleistungsbereiche': 'Service Industries'
-    }
+    'Jahr': 'Year',
+    'Insgesamt': 'Total',
+    'Land- u. Forstwirtschaft, Fischerei': 'Agriculture, Forestry, and Fishing',  # Corrected this line
+    'Produzierendes Gewerbe ohne Baugewerbe': 'Manufacturing Industry excl. Construction',
+    'Baugewerbe': 'Construction',
+    'Dienstleistungsbereiche': 'Service Industries'}
 
         df.rename(columns=column_mapping, inplace=True)
         required_columns = ['Year', 'Total', 'Agriculture, Forestry, and Fishing',
                         'Manufacturing Industry excl. Construction', 'Construction',
                         'Service Industries']
 
-    # Check if all  col are present
         if all(col in df.columns for col in required_columns):
             employment_growth_table = 'employment_growth_data'
             df[required_columns].to_sql(employment_growth_table, con=engine, index=False, if_exists='replace')
             print("Employment growth data processed and saved to SQLite.")
         else:
-            print("Error")
-
+            missing_columns = [col for col in required_columns if col not in df.columns]
+            print(f"Error: Missing columns in DataFrame: {missing_columns}")
 
         
     def process_venture_capital_data():
