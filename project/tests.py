@@ -65,7 +65,7 @@ class TestDataPipeline(unittest.TestCase):
 
 
     def test_total_employment_growth_consistency(self):
-        expected_employment_growth_row_count = 31
+        expected_employment_growth_row_count = 32
         self.assertEqual(self.get_row_count('employment_growth_data'), expected_employment_growth_row_count)
         self.check_no_null_values('employment_growth_data', ['Year','Total','Agriculture, Forestry, and Fishing','Manufacturing Industry excl. Construction','Construction','Service Industries'])  
       

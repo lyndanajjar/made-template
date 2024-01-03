@@ -67,14 +67,12 @@ try:
 
         csv_data = StringIO(response.text)
         df = pd.read_csv(csv_data, delimiter=';', encoding='unicode_escape') 
-        df.columns = [col.strip().replace('"', '') for col in df.columns]  # Improved column cleaning
-
-        print("Columns in DataFrame:", df.columns)  # Add this line to check the actual column names
+        df.columns = [col.strip().replace('"', '') for col in df.columns]  
 
         column_mapping = {
     'Jahr': 'Year',
     'Insgesamt': 'Total',
-    'Land- u. Forstwirtschaft, Fischerei': 'Agriculture, Forestry, and Fishing',  # Corrected this line
+    'Land- u. Forstwirtschaft, Fischerei': 'Agriculture, Forestry, and Fishing', 
     'Produzierendes Gewerbe ohne Baugewerbe': 'Manufacturing Industry excl. Construction',
     'Baugewerbe': 'Construction',
     'Dienstleistungsbereiche': 'Service Industries'}
