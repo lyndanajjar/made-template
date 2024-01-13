@@ -42,10 +42,8 @@ if __name__ == '__main__':
     df = filter_data(df, 'Batterietemperatur', lambda x: -459.67 < x < 212)
     df = filter_data(df, 'Geraet aktiv', lambda x: x in ['Ja', 'Nein'])
     
-    data_table_name = 'temperatures'
-    sqlite_db_file = 'temperatures.sqlite'
-    sqlite_connection_string = f'sqlite:///{sqlite_db_file}'
-    df.to_sql(data_table_name, sqlite_connection_string, if_exists='replace', index=False, dtype={
+    database = 'temperatures.sqlite'
+    df.to_sql('temperatures', f'sqlite:///{database}', if_exists='replace', index=False, dtype={
         'Geraet': BIGINT,
         'Hersteller': TEXT,
         'Model': TEXT,
