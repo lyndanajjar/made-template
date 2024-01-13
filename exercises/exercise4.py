@@ -1,75 +1,58 @@
 import os
-import urllib.request
 import zipfile
-import pandas as pd
-from sqlalchemy import create_engine, Integer, Float, String
-from sqlalchemy.types import BigInteger
+from pathlib import Path
 import shutil
-
-# Constants for the file paths
-local_zip_path = 'mowesta-dataset.zip'
-local_extracted_path = 'mowesta-dataset'
-database_path = 'sqlite:///temperatures.sqlite'
-csv_filename = 'data.csv'
-
-# Download the dataset
-url = 'https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip'
-urllib.request.urlretrieve(url, local_zip_path)
-
-# Unzip the dataset
-with zipfile.ZipFile(local_zip_path, 'r') as zip_ref:
-    zip_ref.extractall(local_extracted_path)
-
-# Full path to the CSV file after extraction
-csv_file_path = os.path.join(local_extracted_path, csv_filename)
-
-# Define the columns to use based on the column names in the file
-use_cols = [
-    "Geraet", "Hersteller", "Model", "Monat",
-    "Temperatur in Â°C (DWD)", "Batterietemperatur in Â°C", "Geraet aktiv"
-]
-
-# Read the CSV file
-df = pd.read_csv(csv_file_path, delimiter=';', usecols=use_cols, encoding='ISO-8859-1')
-
-# Rename columns
-df.rename(columns={
-    "Temperatur in Â°C (DWD)": "Temperatur",
-    "Batterietemperatur in Â°C": "Batterietemperatur"
-}, inplace=True)
-
-# Convert temperatures from Celsius to Fahrenheit
-df['Temperatur'] = pd.to_numeric(df['Temperatur'], errors='coerce')
-df['Batterietemperatur'] = pd.to_numeric(df['Batterietemperatur'], errors='coerce')
-df['Temperatur'] = df['Temperatur'].apply(lambda x: (x * 9/5) + 32 if pd.notna(x) else x)
-df['Batterietemperatur'] = df['Batterietemperatur'].apply(lambda x: (x * 9/5) + 32 if pd.notna(x) else x)
-
-# Validate data
-df['Geraet'] = pd.to_numeric(df['Geraet'], errors='coerce').astype('Int64')
-df['Monat'] = pd.to_numeric(df['Monat'], errors='coerce').astype('Int64')
-df = df[df['Geraet'] > 0]
-
-# Assuming 'Geraet aktiv' should be a boolean, convert 'Ja'/'Nein' to True/False
-df['Geraet aktiv'] = df['Geraet aktiv'].map({'Ja': True, 'Nein': False})
+from typing import Callable, Any
+import pandas as pd
+from sqlalchemy import BIGINT, FLOAT, TEXT
+import requests
+from io import BytesIO
 
 
-# Define SQL data types
-sql_dtypes = {
-    "Geraet": BigInteger(),
-    "Hersteller": String(),
-    "Model": String(),
-    "Monat": Integer(),
-    "Temperatur": Float(),
-    "Batterietemperatur": Float(),
-    "Geraet aktiv": String()
-}
+def filter_data(df: pd.DataFrame, column_name: str, validation_rule: Callable[[Any], bool]) -> pd.DataFrame:
+    valid_rows = df[column_name].apply(validation_rule)
+    return df[valid_rows]
 
-engine = create_engine(database_path)
-df.to_sql('temperatures', con=engine, if_exists='replace', index=False, dtype=sql_dtypes)
+def celsius_to_fahrenheit(c: float) -> float:
+    return (c * 9/5) + 32
 
-
-os.remove(local_zip_path)
-shutil.rmtree(local_extracted_path)
-
-print("Data processing complete and stored in SQLite database.")
-
+if __name__ == '__main__':
+    zip_url = 'https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip'
+    data_filename = 'data.csv'
+    response = requests.get(zip_url)
+    data_path = Path(zip_url).stem
+    with zipfile.ZipFile(BytesIO(response.content)) as zip_file:
+        zip_file.extractall(data_path)
+    df = pd.read_csv(os.path.join(data_path, data_filename),
+                     sep=';',
+                     index_col=False,
+                     usecols=['Geraet', 'Hersteller', 'Model', 'Monat', 'Temperatur in °C (DWD)', 'Batterietemperatur in °C', 'Geraet aktiv'],
+                     decimal=',')
+    df.rename(columns={
+        'Temperatur in °C (DWD)': 'Temperatur',
+        'Batterietemperatur in °C':'Batterietemperatur'
+        }, inplace=True)
+    
+    df['Temperatur'] = celsius_to_fahrenheit(df['Temperatur'])
+    df['Batterietemperatur'] = celsius_to_fahrenheit(df['Batterietemperatur'])
+    
+    df = filter_data(df, 'Geraet', lambda x: x > 0)
+    df = filter_data(df, 'Monat', lambda x: x in range(1, 13))
+    df = filter_data(df, 'Temperatur', lambda x: -459.67 < x < 212)
+    df = filter_data(df, 'Batterietemperatur', lambda x: -459.67 < x < 212)
+    df = filter_data(df, 'Geraet aktiv', lambda x: x in ['Ja', 'Nein'])
+    
+    data_table_name = 'temperatures'
+    sqlite_db_file = 'temperatures.sqlite'
+    sqlite_connection_string = f'sqlite:///{sqlite_db_file}'
+    df.to_sql(data_table_name, sqlite_connection_string, if_exists='replace', index=False, dtype={
+        'Geraet': BIGINT,
+        'Hersteller': TEXT,
+        'Model': TEXT,
+        'Monat': BIGINT,
+        'Temperatur': FLOAT,
+        'Batterietemperatur': FLOAT,
+        'Geraet aktiv': TEXT
+    })
+    shutil.rmtree(data_path)
+    print('Data processing complete and stored in SQLite database.')
