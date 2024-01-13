@@ -52,8 +52,11 @@ if __name__ == '__main__':
         'Batterietemperatur': FLOAT,
         'Geraet aktiv': TEXT
 }
-    database_path = 'sqlite:///temperatures.sqlite'
-    engine = create_engine(database_path)
+
+
+    engine = create_engine('sqlite:///temperatures.sqlite')
     df.to_sql('temperatures', con=engine, if_exists='replace', index=False, dtype=sql_dtypes)
+    
+
     shutil.rmtree(data_path)
     print('Data processing complete and stored in SQLite database.')
