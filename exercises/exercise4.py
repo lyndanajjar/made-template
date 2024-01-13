@@ -7,7 +7,7 @@ import pandas as pd
 from sqlalchemy import BIGINT, FLOAT, TEXT
 import requests
 from io import BytesIO
-
+from sqlalchemy import create_engine
 
 def filter_data(df: pd.DataFrame, column_name: str, validation_rule: Callable[[Any], bool]) -> pd.DataFrame:
     valid_rows = df[column_name].apply(validation_rule)
@@ -42,8 +42,8 @@ if __name__ == '__main__':
     df = filter_data(df, 'Batterietemperatur', lambda x: -459.67 < x < 212)
     df = filter_data(df, 'Geraet aktiv', lambda x: x in ['Ja', 'Nein'])
     
-    database = 'temperatures.sqlite'
-    df.to_sql('temperatures', f'sqlite:///{database}', if_exists='replace', index=False, dtype={
+
+    sql_dtypes = {
         'Geraet': BIGINT,
         'Hersteller': TEXT,
         'Model': TEXT,
@@ -51,6 +51,9 @@ if __name__ == '__main__':
         'Temperatur': FLOAT,
         'Batterietemperatur': FLOAT,
         'Geraet aktiv': TEXT
-    })
+}
+    database_path = 'sqlite:///temperatures.sqlite'
+    engine = create_engine(database_path)
+    df.to_sql('temperatures', con=engine, if_exists='replace', index=False, dtype=sql_dtypes)
     shutil.rmtree(data_path)
     print('Data processing complete and stored in SQLite database.')
