@@ -43,7 +43,9 @@ if __name__ == '__main__':
     df = filter_data(df, 'Geraet aktiv', lambda x: x in ['Ja', 'Nein'])
     
 
-    sql_dtypes = {
+    table = 'temperatures'
+    database = 'temperatures.sqlite'
+    df.to_sql(table, f'sqlite:///{database}', if_exists='replace', index=False, dtype={
         'Geraet': BIGINT,
         'Hersteller': TEXT,
         'Model': TEXT,
@@ -51,11 +53,8 @@ if __name__ == '__main__':
         'Temperatur': FLOAT,
         'Batterietemperatur': FLOAT,
         'Geraet aktiv': TEXT
-}
-
-
-    engine = create_engine('sqlite:///temperatures.sqlite')
-    df.to_sql('temperatures', con=engine, if_exists='replace', index=False, dtype=sql_dtypes)
+    })
+    
     
 
     shutil.rmtree(data_path)
