@@ -5,7 +5,7 @@ import shutil
 from typing import Callable, Any
 import pandas as pd
 from sqlalchemy import BIGINT, FLOAT, TEXT
-import requests
+import urllib.request  
 from io import BytesIO
 from sqlalchemy import create_engine
 
@@ -19,10 +19,11 @@ def celsius_to_fahrenheit(c: float) -> float:
 if __name__ == '__main__':
     zip_url = 'https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip'
     data_filename = 'data.csv'
-    response = requests.get(zip_url)
-    data_path = Path(zip_url).stem
-    with zipfile.ZipFile(BytesIO(response.content)) as zip_file:
-        zip_file.extractall(data_path)
+    database_path = 'sqlite:///temperatures.sqlite'
+    with urllib.request.urlopen(zip_url) as response:
+        data_path = Path(zip_url).stem
+        with zipfile.ZipFile(BytesIO(response.read())) as zip_file:
+            zip_file.extractall(data_path)
     df = pd.read_csv(os.path.join(data_path, data_filename),
                      sep=';',
                      index_col=False,
@@ -54,10 +55,10 @@ if __name__ == '__main__':
         'Geraet aktiv': TEXT
 }
     
-    engine = create_engine('sqlite:///temperatures.sqlite', echo=False)
-    df.to_sql('temperatures', con=engine, if_exists='replace', index=False, dtype=sql_dtypes)
-    engine.dispose()
 
+
+    engine = create_engine(database_path)
+    df.to_sql('temperatures', con=engine, if_exists='replace', index=False, dtype=sql_dtypes)
 
     shutil.rmtree(data_path)
     print('Data processing complete and stored in SQLite database.')
